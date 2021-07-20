@@ -176,3 +176,98 @@ Java11之后JRE、JDK统一，没有JRE了。
 javac.exe:编译器，将.java文件编译为字节码文件.class。
 
 java.exe:运行字节码文件.class，由JVM对字节码进行解释和运行。
+
+### 15.JIT
+
+JIT编译器在将字节码编译过一次后的机器码保存下来，下次可以直接使用。
+
+### 16.静态方法调用非静态成员非法
+
+静态成员属于类，可以直接用类名访问，在类加载的时候就分配内存；而非静态成员属于实例对象，只有对象实例化后才存在，再通过类的实例化对象去访问。所以非静态成员不存在的时候静态成员就存在了。
+
+静态方法只允许访问静态成员。
+
+### 17.成员变量、局部变量
+
+1.成员变量属于类，局部变量属于代码块或方法。成员变量可以被public、private、static、final修饰，局部变量只能被final修饰。
+
+2.内存存储方式来看，静态成员变量属于类，不加static的变量属于实例对象，存在堆内存中；而局部变量存在虚拟机栈中的局部变量表里。
+
+3。生存时间来看，成员变量随对象创建而创建，局部变量在方法调用创建，执行结束死亡。
+
+4.成员变量初始化会赋默认值，局部变量不赋默认值。
+
+### 18.构造方法
+
+类的构造方法是为了类对象的初始化。
+
+不写构造方法会调用无参数的构造方法，定义了构造方法new的时候不能不传参数了。
+
+构造方法名与类名相同，没有返回值且不能void声明，生成对象时自动执行，无需调用。
+
+构造方法不可以override，但可以overload，可以有多个构造方法。
+
+### 19.Java三大特性
+
+1.封装：把一个对象的状态信息隐藏在内部，不允许外部直接访问内部的信息。但是可以提供一些外部可以调用的方法来操作属性。
+
+2.继承：使用已存在的类的定义来创建新的类技术。
+
+3.多态：一个对象具有多种状态，具体表现为父类引用指向子类对象。实现方式：重写、接口、抽象类。
+
+### 20.序列化、反序列化
+
+序列化：将对象或数据结构转换成二进制字节流。
+
+反序列化：将序列化生成的二进制字节流转换成对应的对象或数据结构。
+
+目的：通过网络传输对象或将对象存储在文件、数据库中。
+
+transient关键字：修饰的变量不会被序列化。
+
+### 21.键盘输入方式
+
+##### 1.Scanner
+
+```java
+Scanner input = new Scanner(System.in);
+String s = input.nextLine();
+input.close();
+```
+
+##### 2.BufferedReader
+
+```java
+BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+String s = input.readLine();
+```
+
+### 22.将数组转换为ArrayList
+
+##### 1.手动转换
+
+##### 2.new一个ArrayList
+
+```java
+List list = new ArrayList<>(Arrays.asList(array));
+```
+
+##### 3.Java8的stream
+
+```java
+//包装类
+Integer[] myArray = {1, 2, 3};
+List myList = Arrays.stream(myArray).collect(Collectors.toList());
+//基本类型
+int[] myArray = {1, 2, 3};
+List myList = Arrays.stream(myArray).boxed().collect(Collectors.toList());
+```
+
+##### 4.Java9的List.of()
+
+```java
+//不支持基本类型
+Integer[] myArray = {1, 2, 3};
+List myList = List.of(myArray);
+```
+

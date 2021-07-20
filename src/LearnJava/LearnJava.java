@@ -1,5 +1,7 @@
-package SwordToOffer;
+package LearnJava;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +25,11 @@ public class LearnJava {
                 "Juan Martin Del Potro"};
         List<String> players =  Arrays.asList(atp);
         players.forEach((player) -> System.out.println(player+ ';'));
+
+        BigDecimal aB = new BigDecimal(1.0);
+        BigDecimal bB = new BigDecimal("2.0");
+        String[] str = {"das", "dasd"};
+        List myList = Arrays.asList(str);
     }
 
     private static String getType(Object a) {
@@ -33,6 +40,15 @@ public class LearnJava {
     public static class Dog {
 
         String name;
+        private int age;
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
 
         Dog(String name) {
             this.name = name;
