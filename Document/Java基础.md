@@ -271,3 +271,10 @@ Integer[] myArray = {1, 2, 3};
 List myList = List.of(myArray);
 ```
 
+### 23.查看大小
+
+length：数组
+
+length()：字符串
+
+size()：泛型集合

@@ -26,6 +26,8 @@ map：使用键值对存储，key无序，不可重复，value无序，可重复
 
 List接口的主要实现类，底层实现是Object数组，线程不安全，支持快速随机访问。添加删除时间复杂度O(1),在指定位置添加删除时间复杂度O(n-i)。
 
+**扩容：**默认大小为10。扩容后大小为默认大小的1.5倍（10 + 10 >> 1(10 / 2)）
+
 ##### 2.LinkedList
 
 底层实现是双向链表，不支持高效的快速随机访问。添加删除时间复杂度O(1),在指定位置添加删除时间复杂度O(n)。线程不安全。内存占用大，需要存储前驱、后继、数据。
@@ -72,9 +74,13 @@ Hashtable初始容量为11，扩充后大小为2n+1；HashMap初始容量为16�
 
 给定初始值，Hashtable大小为给定值，HashMap大小为2的幂次方。
 
+HashMap：当链表程度大于阈值（链表长度为8）时，如果数组长度小于64，则会扩容数组；如果大于64，则将链表转变为红黑树，减少搜索时间。
+
+**为何是2的幂次方：**hash值范围很大，大约40亿的映射空间，内存存不下，需要对数组的长度取模计算。使用&运算比%运算效率高，所以计算公式是（n-1）&hash，当n是2的幂次方时，（n-1）&hash与（n-1）%hash等价。
+
 ##### 5.底层结构
 
-jdk1.7时，HashMap底层结构式分段数组+链表，jdk1.8后底层结构为数组+链表/红黑树。当链表程度大于阈值时，将链表转变为红黑树，减少搜索时间。Hashtable没有这种机制。
+jdk1.7时，HashMap底层结构式分段数组+链表，jdk1.8后底层结构为数组+链表/红黑树。当链表程度大于阈值（链表长度为8）时，如果数组长度小于64，则会扩容数组；如果大于64，则将链表转变为红黑树，减少搜索时间。Hashtable没有这种机制。
 
 ### 8.HashMap、HashSet
 
@@ -95,3 +101,57 @@ HashMap使用key计算hashcode，HashSet使用成员对象计算hashcode，两�
 NavigableMap接口让TreeMap有集合内元素的搜索能力。
 
 SortedMap接口实现按键排序的功能，默认按key升序排序。
+
+### 10.HashSet检查重复
+
+当加入对象时，先计算hashcode，与已加入对象的hashcode比较，如果不相等，则假设没有重复；如果相等，再调用equals方法来判断是否真的相等，如果相等，则不会加入成功。
+
+两个对象相等，则hashcode一定相同。
+
+两个对象相等，对两个对象equals也返回true。
+
+如果hashcode相同，对象不一定相等。
+
+所以equals重写过，则hashcode必须重写。
+
+### 11.HashMap的7种遍历方式
+
+大体分四类：迭代器（Iterator）遍历、for each遍历、lambda遍历、streams API遍历。
+
+1.迭代器的entrySet遍历方式
+
+2.迭代器的keySet遍历方式
+
+3.for each的entrySet遍历方式
+
+4.for each的keySet遍历方式
+
+5.lambda的遍历方式
+
+6.streams API的单线程遍历方式
+
+7.streams API的多线程遍历方式
+
+keySet在循环时调用了get(key)方法，又遍历了一边map；entrySet将key，value存在了Entry对象里，无需再遍历map，所以性能提高了一倍。
+
+### 12.ConcurrentHashMap
+
+##### 1.jdk1.7及以前
+
+Segment+HashEntry+链表。Segment是可重入锁，大小为16，HshEntry用来保存键值对，链表用来解决冲突。一个ConcurrentHashMap中有一个Segment数组，一个元素包含一个HashEntry数组，每个元素是个链表。每个Segment元素守护一个HashEntry数组，需要修改元素时，需要先获得Segment的锁。
+
+##### 2.jdk1.8
+
+底层跟HashMap相似，Node数组+链表+红黑树，并发控制用syhchronized+CAS来控制。syhchronized只锁当前链表或红黑树的头结点，只要不冲突，就不会并发。
+
+### 13.HashMap构造方法
+
+1.无参数构造方法
+
+2.包含另一个Map的构造方法
+
+3.指定容量大小的构造方法
+
+4.指定容量大小和加载因子的构造方法
+
+# 待看：ConcurrentHashMap源码
