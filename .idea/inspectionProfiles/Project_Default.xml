@@ -6,8 +6,19 @@
       <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
       <option name="REPORT_CONSTANT_REFERENCE_VALUES" value="false" />
     </inspection_tool>
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="184" name="Java" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="EmptyStatementBody" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="m_reportEmptyBlocks" value="true" />
+    </inspection_tool>
     <inspection_tool class="IfStatementWithIdenticalBranches" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="myHighlightWhenLastStatementIsCall" value="false" />
+    </inspection_tool>
+    <inspection_tool class="LoopConditionNotUpdatedInsideLoop" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="ignoreIterators" value="false" />
     </inspection_tool>
   </profile>
 </component>
