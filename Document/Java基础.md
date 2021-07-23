@@ -29,7 +29,7 @@ String经常作为参数，不可改变保证参数不便。（例如网络连�
 
 不可变，天生线程安全，不用考虑同步问题。
 
-### 3.StringBulider、StringBuffer
+### 3.StringBuilder、StringBuffer
 
 StringBuffer是线程安全的，类中的方法都添加了**synchronized关键字**，也就是给这个方法添加了一个锁，用来保证线程安全。，而StringBuilder则没有实现线程安全功能，所以性能略高。
 
