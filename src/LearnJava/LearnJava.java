@@ -30,6 +30,12 @@ public class LearnJava {
         BigDecimal bB = new BigDecimal("2.0");
         String[] str = {"das", "dasd"};
         List myList = Arrays.asList(str);
+        List<String> numList = new ArrayList<String>();
+        numList.add("1");
+        numList.add("2");
+        numList.add("3");
+        String[] numArray = numList.toArray(new String[0]);
+        System.out.println(numArray[1]);
     }
 
     private static String getType(Object a) {
