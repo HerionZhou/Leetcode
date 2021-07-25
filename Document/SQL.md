@@ -154,7 +154,7 @@ AUTO_INCREMENT，必须为索引，只能一个字段
 
 ##### 6.注释
 
-COMMIT '内容'
+COMMENT '内容'
 
 ##### 7.外键
 
