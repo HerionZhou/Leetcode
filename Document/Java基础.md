@@ -1,5 +1,7 @@
 [TOC]
 
+A-Z的ASCII码:65-90   a-z：65+32-90+32
+
 ### 1.int与Integer的基本使用对比
 
 Integer是int的包装类；int是基本数据类型；

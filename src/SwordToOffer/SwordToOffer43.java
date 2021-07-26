@@ -1,5 +1,7 @@
 package SwordToOffer;
 
+import java.util.Scanner;
+
 public class SwordToOffer43 {
     static class Solution{
         public int algorithm(int n){
