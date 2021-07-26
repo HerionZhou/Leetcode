@@ -140,6 +140,18 @@ keySet在循环时调用了get(key)方法，又遍历了一边map；entrySet将k
 
 Segment+HashEntry+链表。Segment是可重入锁，大小为16，HshEntry用来保存键值对，链表用来解决冲突。一个ConcurrentHashMap中有一个Segment数组，一个元素包含一个HashEntry数组，每个元素是个链表。每个Segment元素守护一个HashEntry数组，需要修改元素时，需要先获得Segment的锁。
 
+**初始化segment**
+
+检查计算得到的位置的segment是否为null
+
+为null继续初始化，使用segment[0]的容量和负载因子创建一个HashEntry数组
+
+再次检查指定位置的segment是否为null
+
+使用创建的HashEntry数组初始化这个segment
+
+自旋判断计算得到的指定位置的segment是否为null，使用CAS在这个位置赋值。
+
 ##### 2.jdk1.8
 
 底层跟HashMap相似，Node数组+链表+红黑树，并发控制用syhchronized+CAS来控制。syhchronized只锁当前链表或红黑树的头结点，只要不冲突，就不会并发。
@@ -153,5 +165,3 @@ Segment+HashEntry+链表。Segment是可重入锁，大小为16，HshEntry用来
 3.指定容量大小的构造方法
 
 4.指定容量大小和加载因子的构造方法
-
-# 待看：ConcurrentHashMap源码
