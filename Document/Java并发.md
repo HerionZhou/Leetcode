@@ -1,3 +1,5 @@
+[TOC]
+
 ### 1.进程
 
 进程就是程序的一次执行过程，是系统运行程序的基本单位，是资源分配的最小单位。系统运行一个程序即从进程创建运行到消亡的过程。
@@ -129,3 +131,110 @@ new一个Thread，线程会进入初始状态。调用start()方法，会启动�
 而直接执行run()方法，会把run()方法作为main线程下的普通方法去执行，不是多线程。
 
 调用start()会启动线程并进入就绪状态，直接调用run()不会用多线程执行。
+
+### 12.synchronized
+
+synchronized关键字解决的是多个线程之间访问资源的同步性，synchronized关键字可以保证被修饰的方法或代码块在任意时刻只有一个线程执行。
+
+##### 1.使用方式
+
+**修饰实例方法：**对对象实例加锁，进入同步代码前要获得当前对象实例的锁。
+
+**修饰静态方法：**对类加锁，会作用到类的所有对象实例。因为静态成员不属于实例对象，是类成员。一个线程调用对象实例的非静态synchronized方法，另一个线程可以调用类的静态synchronized方法。
+
+**修饰代码块：**指定加锁对象，给类或对象加锁。
+
+synchronized(this/Object)：给指定对象实例加锁。
+
+synchronized(类.class)：给类加锁。
+
+##### 2.双重校验锁实现单例
+
+```java
+public static class Singleton{
+        private volatile static Singleton instance;
+
+        private Singleton() {};
+
+        public static Singleton getInstance(){
+            if (instance == null){
+                synchronized (Singleton.class){
+                    if (instance == null){
+                        instance = new Singleton();
+                    }
+                }
+            }
+            return instance;
+        }
+    }
+```
+
+volatile很有必要：
+
+instance = new Singleton()实际分三步进行：为instance分配内存空间、初始化instance、将instance指向分配的内存地址。
+
+由于JVM的指令重排特性，可能第二步执行后再执行第三步。这样一个线程执行了第一步、第三步，另一个线程调用getInstance()发现instance不为空，则返回instance，但此时instance还未初始化。使用volatile关键字可以禁止JVM的指令重排，保证多线程环境下单例正常运行。
+
+##### 3.构造方法可以使用synchronized吗
+
+不能，构造方法本身线程安全，不存在同步构造方法。
+
+##### 4.synchronized底层原理
+
+**修饰语句块：**通过monitorenter和monitorexit指令实现同步。monitorenter指向同步代码块的开始位置，monitorexit指向同步代码块的结束位置。
+
+JVM中，Monitor是基于C++实现的，每个对象都内置一个Objectmonitor对象。另外wait、notify方法也依赖Monitor对象，这就是为什么只有在同步的块或方法中才能调用wait和notify方法。
+
+执行monitorenter时，会试图获取对象的锁，如果锁的计数器为0则可以获取，获取后计数器加1。
+
+执行monitorexit时，释放锁，计数器减1。
+
+**修饰方法：**没有使用monitorenter等指令，而是使用ACC_SYNCHRONIZED标识，JVM通过这个标识判断一个方法是否是同步方法，并执行相应的同步调用。
+
+**总结：**两者本质都是对monitor的获取。
+
+##### 5.synchronized和ReentrantLock区别
+
+**可重入锁：**两者都是可重入锁。
+
+可重入锁指自己可以再次获得自己的内部锁，例如一个线程获取的某个对象的锁，还没有释放的时候，可以再次获取这个对象的锁，锁的计数器加1。如果不是可重入的，会产生死锁。
+
+**synchronized依赖JVM，ReentrantLock依赖API：**
+
+**ReentrantLock增加了高级功能：**
+
+**·** 等待可中断：等待锁的线程可以被中断等待，去处理其他事情。
+
+**·**实现公平锁：公平锁是指先等待的线程先获取锁。ReentrantLock默认非公平锁。
+
+**·**实现选择性通知：通过Condition对象实现选择通知（jdk1.5）。在一个锁对象中可以创建多个condition（锁监视器），线程对象可以注册在不同的condition中，调用condition的signalAll()方法，只会通知该condition下注册的线程。
+
+synchronized相当于Lock中只有一个condition，调用notify()方法会通知所有等待状态的线程。
+
+### 13.volatile
+
+##### 1.为什么用
+
+jdk1.2之前，java内存模型直接使用主存读取变量，但在之后的java内存模型下，线程可以把变量保存到本地内存中，而不是直接写入共享内存，这就会造成一个线程在主存中修改了变量的值，另一个线程还在使用本地内存中变量的值，造成数据不一致问题。
+
+把变量声明为volatile，告诉JVM这个变量是共享并且不稳定的，每次使用都要去主存中读取，每次修改都要对主存中的变量进行修改。
+
+volatile除了防止JVM的指令重排，还一个作用就是保证变量的可见性。
+
+##### 2.并发编程的三个重要特性
+
+**原子性：**一个操作要么全部做，要么全部做。
+
+**可见性：**一个线程对变量进行了修改，其他线程要立刻看到修改后的值。
+
+**有序性：**保证代码执行的先后顺序。
+
+### 14.synchronized和volatile
+
+volatile是线程同步的轻量级实现，所以volatile比synchronized性能好。
+
+volatile只能用于变量，synchronized可以修饰方法和代码块。
+
+volatile主要用来保证变量的可见性，不能保证原子性，synchronized两者都可以保证。
+
+volatile主要解决变量在多个线程的可见性，synchronized主要解决多个线程之间访问资源的同步性。
