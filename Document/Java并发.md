@@ -238,3 +238,120 @@ volatile只能用于变量，synchronized可以修饰方法和代码块。
 volatile主要用来保证变量的可见性，不能保证原子性，synchronized两者都可以保证。
 
 volatile主要解决变量在多个线程的可见性，synchronized主要解决多个线程之间访问资源的同步性。
+
+### 15.ThreadLocal
+
+使每个线程都有自己的本地变量，让每个线程都绑定自己的值，访问ThreadLocal变量的线程都有这个变量的副本。
+
+##### 待看
+
+### 16.线程池
+
+##### 1.线程池的好处
+
+**降低资源消耗：**通过重复利用已创建的线程来降低创建线程和销毁线程的消耗。
+
+**提高响应速度：**任务到达时，任务不需要等待线程创建就可以立即执行。
+
+**提高可管理性：**线程无限制创建，会消耗系统资源，降低系统稳定性，通过线程池进行统一分配，调优和监控。
+
+##### 2.Runnable接口、Callable接口
+
+**Runnable接口：**jdk1.0就存在，不会返回结果和抛出异常。
+
+**Callable接口：**jdk1.5，会返回结果和抛出异常。
+
+如果任务无需返回结果或抛出异常，可以用Runnable接口；Executors工具类可以实现两者的转换。
+
+##### 3.execute()、submit()
+
+**execute()：**用于提交不需要返回值的任务，无法判断任务是否被线程池执行成功。
+
+**submit()：**用于提交需要返回值的任务，线程池会返回一个Future类型的对象，调用get()方法来获取返回值，会阻塞线程直到任务完成。
+
+##### 4.创建线程池方式
+
+**（1）通过ThreadPoolExecutor构造方法实现**
+
+**（2）通过Executor框架的工具类Executors来实现**
+
+**Executors返回线程池对象的弊端：**FixedThreadPool和SingleThreadPool允许请求的队列长度是Integer.MAX_VALUE，可能堆积大量的请求，导致内存溢出；CachedThreadPool和ScheduledThreadPool允许创建的线程数量是Integer.MAX_VALUE，可能堆积大量线程，导致内存溢出。
+
+##### 5.ThreadPoolExecutor构造函数参数
+
+corePoolSize：最小同时运行的线程数。
+
+maximumPoolSize：当队列中的请求任务达到最大值时，可同时运行的最大线程数。
+
+workQueue：当有新任务的时候，会判断线程数是否达到核心线程数，达到的话，任务请求存放在队列中。
+
+keepAliveTime：当线程数大于核心线程数，如果没有新任务提交，会在超过keepAliveTime后销毁核心线程外的线程。
+
+unit：keepAliveTime的单位。
+
+threadFactory
+
+handler：饱和策略。
+
+##### 6.ThreadPoolExecutor的饱和策略
+
+AbortPolicy：抛出异常拒绝新任务的处理。（默认）
+
+CallerRunsPolicy：调用执行自己的线程运行任务，直接在调用excute()的方法中运行任务。
+
+DiscardPolicy：直接丢弃。
+
+DiscardOldestPolicy：丢弃最早未处理的请求。
+
+##### 7.原理分析
+
+使用ThreadPoolExecutor创建一个对象executor，调用方法executor.execute()将任务提交到线程池中
+
+如果当前线程数小于核心线程数，则通过addWorker()创建一个线程并将任务添加到此线程中执行；
+
+如果当前线程数大于等于核心线程数，判断线程池状态，RUNNING并且队列可以加入任务，则将任务添加进队列，之后在判断线程池状态，如果是RUNNING则创建线程执行，如果不是RUNNING则从队列中移除任务；
+
+入队失败，尝试通过addWorker()创建一个线程并执行。
+
+### 17.Atomic原子类
+
+Atomic指一个操作不可中断，多个线程一起执行时，一旦操作开始，不会被其他线程干扰。
+
+JUC包下的原子类都在atomic下
+
+![image-20210729171155117](C:\Users\Herion\AppData\Roaming\Typora\typora-user-images\image-20210729171155117.png)
+
+##### 1.JUC包中的原子类
+
+**基本类型**
+
+AtomicInteger
+
+AtomicLong
+
+AtomicBoolean
+
+**数组类型**
+
+AtomicIntegerArray
+
+AtomicLongArray
+
+AtomicReferenceArray
+
+**引用类型**
+
+AtomicReference
+
+AtomicStampedReference
+
+AtomicMarkableReference
+
+**对象的属性修改类型**
+
+AtomicIntegerFieldUpdater
+
+AtomicLongFieldUpdater
+
+AtomicReferenceFieldUpdater
+
