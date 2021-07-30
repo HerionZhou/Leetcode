@@ -34,6 +34,7 @@ public class SwordToOffer48 {
         }
         //动态规划
         //通过哈希表存下离当前字符最近的字符位置，通过比较相同两个字符的距离和上一个状态子串长度来算出当前子串长度
+        //map.getOrDefault(key, default)：获取value，如果没有返回默认值
         public int algorithm1(String s){
             HashMap<Character, Integer> map = new HashMap<>();
             int temp = 0, j = 0, res = 0;
