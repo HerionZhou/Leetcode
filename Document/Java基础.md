@@ -288,3 +288,51 @@ length()：字符串
 size()：泛型集合
 
 ### 24.I/O流
+
+##### 1.既然有了字节流,为什么还要有字符流?
+
+字符流是由 Java 虚拟机将字节转换得到的，问题就出在这个过程还算是非常耗时，并且，如果我们不知道编码类型就很容易出现乱码问题。所以， I/O 流就干脆提供了一个直接操作字符的接口，方便我们平时对字符进行流操作。如果音频文件、图片等媒体文件用字节流比较好，如果涉及到字符的话使用字符流比较好。
+
+### 25.反射
+
+reflect
+
+反射是在运行时才知道要操作的类是什么，并且在运行时获得类的完整构造，并可以调用其方法。
+
+```java
+//获取类的对象实例
+Class studentClass = Class.forName("com.zhou.pojo.Student");
+
+//根据对象获取构造器对象
+//class.newInstance()默认无参构造
+Object student = studentClass.newInstance();
+
+//使用构造器可以进行有参构造
+Constructor studentConstructor = studentClass.getConstructor();
+//根据构造器对象获取反射类对象
+Object student = studentConstructor.newInstance();
+
+//根据对象获取方法对象
+Method setStudentName = studentClass.getMethod("setName", String.class);
+//使用invoke()方法调用方法
+setStudentName.invoke("Eric");
+
+//获取类的属性
+//getFields()获取不到private属性
+Field[] fields = studentClass.getFields();
+for (Field field :fields){
+    System.out.println(field.getName());
+}
+//getDeclaredFields()可以获取private属性
+Field[] fields = studentClass.getDeclaredFields();
+```
+
+**MethodAccessor:**
+
+Method的invoke()方法调用MethodAccessor类的invoke()方法进行处理。
+
+MethodAccessor有两个版本，一个是native版本，一个是Java版本。
+
+native版本的MethodAccessor启动速度快，但随运行时间变长速度变慢；java版本的MethodAccessor启动速度慢，但随运行时间变长速度变快。
+
+在第一次调用invoke()时，使用NativeMethodAccessorImpl实现，在反射调用超过15次之后，使用MethodAccessorGenerator生成的MethonAccessor。

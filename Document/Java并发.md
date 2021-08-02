@@ -355,3 +355,44 @@ AtomicLongFieldUpdater
 
 AtomicReferenceFieldUpdater
 
+### 18.AQS
+
+全程AbstractQueueSynchronizer，这个类在java.util.concurrent.locks下。是用来构建锁和同步器的框架。
+
+##### 1.AQS原理
+
+AQS的思想是，请求一个空闲的共享资源，就将请求资源的线程设为工作线程，并且将共享资源加锁；如果共享资源被占用，需要有一个线程堵塞等待和分配锁的机制，AQS用CLH队列锁实现，将暂时获取不到资源的线程加入到队列中。
+
+##### 2.AQS共享方式
+
+**独占：**只有一个线程能执行，可分为公平锁、不公平锁。
+
+**共享：**多个线程可同时执行。
+
+##### 3.自定义同步器
+
+自定义同步器只需要实现共享资源state的获取与释放即可。
+
+**模版方法模式：**
+
+1.使用者继承AbstractQueuedSynchronizer，并重写指定方法。
+
+2.将AQS组合在使用者的实现中，调用模版方法，模版方法会调用重写的方法。
+
+isHeldExclusively()：该线程是否正在独占资源。
+
+tryAcquire(int)：独占方式，尝试获取资源。
+
+tryRelease(int)：独占方式，尝试释放资源。
+
+tryAcquireShared(int)：共享方式，尝试获取资源。
+
+tryReleaseShared(int)：共享方式，尝试释放资源。
+
+以ReentrantLock为例：初始状态state=0，当A线程lock()时，调用tryAcquire()方法将state加1，之后其他线程获取锁都会失败，直到A线程unlock()，state=0，其他资源才可以获得锁。因为是可重入锁，state可以累加，但获取几次就要释放几次。
+
+##### 4.AQS组件
+
+**Semaphore信号量：**允许多个线程同时访问。
+
+**CountDownLatch倒计时器：**允许count个 线程阻塞在同一个地方，协调多个线程的同步。调用await()方法来进行等待。
