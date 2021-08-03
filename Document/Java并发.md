@@ -396,3 +396,130 @@ tryReleaseShared(int)：共享方式，尝试释放资源。
 **Semaphore信号量：**允许多个线程同时访问。
 
 **CountDownLatch倒计时器：**允许count个 线程阻塞在同一个地方，协调多个线程的同步。调用await()方法来进行等待。
+
+### 19.java多线程实现方法
+
+##### 1.继承Thread类，重写run()方法
+
+```java
+static class MyThread extends Thread {
+    private int i;
+    @Override
+    public void run() {
+        for (i = 0; i < 10; i++){
+            System.out.println(Thread.currentThread().getName() + " " + i);
+        }
+    }
+}
+public static void main(String[] args) {
+    for (int i = 0; i < 10; i++){
+        System.out.println(Thread.currentThread().getName() + " " + i);
+        if (i == 5){
+            MyThread myThread1 = new MyThread();
+            MyThread myThread2 = new MyThread();
+            myThread1.start();
+            myThread2.start();
+        }
+    }
+}
+```
+
+
+
+##### 2.实现Runnable()接口，重写run()方法，实现接口的类的实例作为Thread构造函数的target
+
+```java
+static class MyRunnable implements Runnable{
+    private int i = 0;
+    @Override
+    public void run() {
+        for (i = 0; i < 10; i++){
+            System.out.println(Thread.currentThread().getName() + " " + i);
+        }
+    }
+}
+public static void main(String[] args) {
+    for (int i = 0; i < 10; i++){
+        System.out.println(Thread.currentThread().getName() + " " + i);
+        if (i == 5){
+            Runnable myRunnable = new MyRunnable();
+            Thread thread1 = new Thread(myRunnable);
+            Thread thread2 = new Thread(myRunnable);
+            thread1.start();
+            thread2.start();
+        }
+    }
+}
+```
+
+
+
+##### 3.通过Callable和FutureTask创建线程
+
+创建Callable接口的实现类，重写call()方法
+
+创建实现类对象，使用FutureTask包装Callable对象
+
+使用FutureTask对象作为Thread的target
+
+调用FutureTask的get()方法获取返回值
+
+```java
+static class MyCallable implements Callable<Integer> {
+    private int i = 0;
+    @Override
+    public Integer call() throws Exception {
+        int sum = 0;
+        for (i = 0; i < 10; i++){
+            System.out.println(Thread.currentThread().getName() + " " + i);
+            sum += i;
+        }
+        return sum;
+    }
+}
+public static void main(String[] args) {
+    Callable<Integer> myCallable = new MyCallable();
+    FutureTask<Integer> futureTask = new FutureTask<>(myCallable);
+    for (int i = 0; i < 10; i++){
+        System.out.println(Thread.currentThread().getName() +" "+ i);
+        if (i == 5){
+            Thread thread1 = new Thread(futureTask);
+            thread1.start();
+        }
+    }
+    System.out.println("=============");
+    try {
+        int sum = futureTask.get();
+        System.out.println("sum = " + sum);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    } catch (ExecutionException e) {
+        e.printStackTrace();
+    }
+}
+```
+
+
+
+##### 4.通过线程池创建线程
+
+```java
+private static int POOL_NUM = 10;
+
+static class MyRunnable implements Runnable{
+    @Override
+    public void run() {
+        System.out.println("通过线程池方式创建的线程：" + Thread.currentThread().getName() + " ");
+    }
+}
+
+public static void main(String[] args) {
+    ExecutorService executorService = Executors.newFixedThreadPool(5);
+    for (int i = 0; i < POOL_NUM; i++){
+        MyRunnable thread = new MyRunnable();
+        executorService.execute(thread);
+    }
+    executorService.shutdown();
+}
+```
+
