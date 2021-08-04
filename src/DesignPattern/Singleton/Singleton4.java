@@ -1,7 +1,7 @@
-package LearnJava;
+package DesignPattern.Singleton;
 
 
-public class LearnSingleton {
+public class Singleton4 {
     //双重校验锁DCL
     public static class Singleton{
         private volatile static Singleton instance;
@@ -19,19 +19,14 @@ public class LearnSingleton {
             return instance;
         }
 
-    }
-
-    public static class SynchronizedDemo {
-        public void method() {
-            synchronized (this) {
-                System.out.println("synchronized 代码块");
-            }
+        public void message(){
+            System.out.println("双重校验锁单例");
         }
+
     }
 
     public static void main(String[] args) {
-        Singleton singleton;
-        SynchronizedDemo synchronizedDemo = new SynchronizedDemo();
-        synchronizedDemo.method();
+        Singleton singleton = Singleton.getInstance();
+        singleton.message();
     }
 }
