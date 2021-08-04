@@ -241,9 +241,21 @@ volatile主要解决变量在多个线程的可见性，synchronized主要解决
 
 ### 15.ThreadLocal
 
-使每个线程都有自己的本地变量，让每个线程都绑定自己的值，访问ThreadLocal变量的线程都有这个变量的副本。
+通常创建的变量可以被任何一个线程访问，如果想实现每个线程有自己专属的本地变量，就要使用ThreadLocal，使每个线程都有自己的本地变量，让每个线程都绑定自己的值，访问ThreadLocal变量的线程都有这个变量的副本。
 
-##### 待看
+可以使用get()，set()方法来获取默认值或将值更改为当前线程所存的副本的值，避免线程安全问题。
+
+本地变量放在ThreadLocalMap中，每个线程Thread都有一个ThreadLocalMap，key是ThreadLocal，value是存的对象
+
+##### ThreadLocal的内存泄漏问题
+
+ThreadLocal会发生内存泄漏问题，因为ThreadLocalMap的key是弱引用，value是强引用，如果ThreadLocal没有被外部强引用的话，垃圾回收后key会被清理，而value不会被清理掉。这样会出现key是null的数据，如果不处理，则value永远无法被回收。
+
+解决方法：在调用set()，get()，remove()方法时，会清理掉key为null的记录。
+
+##### 特性
+
+synchronized通过线程等待解决线程安全，而ThreadLocal是为每个线程单独创建一个变量副本。
 
 ### 16.线程池
 
