@@ -159,3 +159,63 @@ Spring事务驱动模型使用观察者模式。
 ##### 7.适配器模式
 
 Spring AOP的增强或通知（advice）使用到适配器模式；Spring MVC中用适配器模式适配Controller。
+
+### 7.Spring事务
+
+##### 1.Spring管理事务的方式
+
+1.编程式事务，在代码中硬编码
+
+2.声明式事务，在配置文件中配置
+
+声明式事务分为两种：基于XML的声明式事务、基于注解的声明式事务
+
+##### 2.隔离级别
+
+TransactionDefinition接口中定义了五个表示隔离级别的常量：
+
+**ISOLATION_DEFAULT：**使用后端数据库默认的隔离级别，MySQL默认是可重复度。
+
+**ISOLATION_READ_UNCOMMITTED：**未提交读，最低级的隔离级别，会出现幻读、不可重复读、脏读问题。
+
+**ISOLATION_READ_COMMITTED：**已提交读，可以解决脏读问题，但不能解决幻读和不可重复读问题。
+
+**ISOLATION_REPEATABLE_READ：**可重复读，可以解决脏读、不可重复读问题，但不能解决幻读问题。
+
+**ISOLATION_SERIALIZABLE：**最高的隔离级别，完全服从ACID的隔离级别，事务按顺序执行，不会产生干扰，但严重影响性能。
+
+##### 3.Spring事务哪几种事务传播行为
+
+**支持当前事务的情况：**
+
+**PROPAGATION_REQUIRED：**存在事务，则加入事务；不存在事务，则创建新事务。
+
+**PROPAGATION_SUPPORTS：**存在事务，则加入事务；不存在事务，则以非事务方式运行。
+
+**PROPAGATION_MANDATORY：**存在事务，则加入事务；不存在事务，则抛出异常。
+
+**不支持当前事务的情况：**
+
+**PROPAGATION_REQUIRES_NEW：**创建新的事务，如果当前存在事务，则把当前事务挂起。
+
+**PROPAGATION_NOT_SUPPORTED：**以非事务方式运行，如果当前存在事务，则把当前事务挂起。
+
+**PROPAGATION_NEVER：**以非事务方式运行，如果当前存在事务，则抛出异常。
+
+##### 4.@Transactional注解
+
+作用到类上时，该类所有public方法都具有该类型的事务属性；作用到方法上时，可以覆盖类级别的定义。方法抛出异常，就会回滚，数据库数据也回滚。
+
+不配置属性rollbackFor，则事务只在遇到运行时异常时才回滚；rollbackFor=Exception.class可以在遇到非运行时异常也回滚。
+
+### 8.JPA
+
+##### 不持久化方法
+
+1.static
+
+2.final
+
+3.transient
+
+4.@Transient

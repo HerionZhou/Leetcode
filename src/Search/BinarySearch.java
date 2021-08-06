@@ -1,6 +1,7 @@
 package Search;
 
 public class BinarySearch {
+    //二分查找/折半查找 logn
     public static int binarySearch(int[] nums, int target){
         int left = 0, right = nums.length - 1;
         while (left <= right){
