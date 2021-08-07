@@ -1,6 +1,6 @@
 [TOC]
 
-A-Z的ASCII码:65-90   a-z：65+32-90+32
+A-Z的ASCII码:65-90   a-z：65+32-90+32 -->
 
 ### 1.int与Integer的基本使用对比
 
@@ -179,7 +179,7 @@ javac.exe:编译器，将.java文件编译为字节码文件.class。
 
 java.exe:运行字节码文件.class，由JVM对字节码进行解释和运行。
 
-### 15.JIT
+### 15.JIT 及时编译
 
 JIT编译器在将字节码编译过一次后的机器码保存下来，下次可以直接使用。
 
@@ -257,10 +257,12 @@ String s = input.readLine();
 ##### 2.new一个ArrayList
 
 ```java
+//不支持基本数据类型
+//使用后数组跟列表连接起来，一个更新，另一个也改变
 List list = new ArrayList<>(Arrays.asList(array));
 ```
 
-##### 3.Java8的stream
+##### 3.Java8的Arrays.stream
 
 ```java
 //包装类
