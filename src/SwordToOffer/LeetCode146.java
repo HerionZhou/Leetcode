@@ -3,41 +3,39 @@ package SwordToOffer;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class LeetCode146 {
     //LRU，使用LinkedHashMap
     static class LRUCache {
-        HashMap<Integer, Integer> cache;
-        LinkedList<Integer> lru;
-        int count;
+        Map<Integer, Integer> cache = new LinkedHashMap<>();
+        int capacity;
         public LRUCache(int capacity) {
-            this.cache = new HashMap<>();
-            this.lru = new LinkedList<>();
-            this.count = capacity;
+            this.capacity = capacity;
         }
 
         public int get(int key) {
-            if (!lru.contains(key)) return -1;
-            lru.remove(lru.indexOf(key));
-            lru.addLast(key);
-            return cache.get(key);
+            if (cache.containsKey(key)){
+                int value = cache.get(key);
+                cache.remove(key);
+                cache.put(key, value);
+                return value;
+            }else {
+                return -1;
+            }
         }
 
         public void put(int key, int value) {
             if (cache.containsKey(key)){
-                cache.replace(key, value);
-                lru.remove(lru.indexOf(key));
-                lru.addLast(key);
+                cache.remove(key);
+                cache.put(key, value);
+            }
+            if (cache.size() < capacity){
+                cache.put(key, value);
             }else {
-                if (count > 0){
-                    cache.put(key, value);
-                    lru.addLast(key);
-                    count--;
-                }else {
-                    cache.remove(lru.removeFirst());
-                    cache.put(key, value);
-                    lru.addLast(key);
-                }
+                int oldestKey = cache.keySet().iterator().next();
+                cache.remove(oldestKey);
+                cache.put(key, value);
             }
         }
     }
@@ -49,7 +47,6 @@ public class LeetCode146 {
         System.out.println(lruCache.get(1));
         lruCache.put(3, 3);
         System.out.println(lruCache.get(1));
-        LinkedHashMap<Integer, Integer> test = new LinkedHashMap<>();
     }
 
 }
