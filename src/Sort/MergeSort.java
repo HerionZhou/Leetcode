@@ -4,14 +4,14 @@ import java.util.Arrays;
 
 //归并排序 nlogn
 public class MergeSort {
-    public static void merge(int[] nums, int l, int r){
+    public static void mergeSort(int[] nums, int l, int r){
         if (l >= r) return;
         int m = (l + r) / 2;
-        merge(nums, l, m);
-        merge(nums, m + 1, r);
-        mergeSort(nums, l, r, m);
+        mergeSort(nums, l, m);
+        mergeSort(nums, m + 1, r);
+        merge(nums, l, r, m);
     }
-    public static void mergeSort(int[] nums, int l, int r, int m){
+    public static void merge(int[] nums, int l, int r, int m){
         int i = l;
         int left = l, right = m + 1;
         int[] temp = new int[nums.length];
@@ -28,7 +28,7 @@ public class MergeSort {
 
     public static void main(String[] args) {
         int[] test1 = {6,8,1,4,6,10,1};
-        merge(test1, 0, test1.length - 1);
+        mergeSort(test1, 0, test1.length - 1);
         System.out.println(Arrays.toString(test1));
     }
 }
