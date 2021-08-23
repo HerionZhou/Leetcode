@@ -3,6 +3,7 @@ package Algorithm.DynamicProgramming;
 public class LeetCode516 {
     static class Solution{
         //最长回文子序列
+        //dp[i][j]表示字符串第i个字符到第j个字符的最长回文子序列长度
         public int algorithm(String s){
             int n = s.length();
             int[][] dp = new int[n][n];
