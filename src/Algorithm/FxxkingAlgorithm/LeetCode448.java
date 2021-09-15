@@ -1,5 +1,6 @@
 package Algorithm.FxxkingAlgorithm;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
