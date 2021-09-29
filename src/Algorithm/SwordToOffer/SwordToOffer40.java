@@ -22,7 +22,7 @@ public class SwordToOffer40 {
         }
         //优先队列（大顶堆、小顶堆）
         //PriorityQueue默认小顶堆
-        //改成小顶堆：PriorityQueue(c, (x1, x2) -> Integer.compare(x2, x1))
+        //改成大顶堆：PriorityQueue(c, (x1, x2) -> Integer.compare(x2, x1))
         public int[] algorithm1(int[] arr, int k){
             if(k == 0) return new int[0];
             Queue<Integer> heap = new PriorityQueue<>(k, (l1, l2) -> Integer.compare(l2, l1));
